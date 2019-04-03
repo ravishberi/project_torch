@@ -2,12 +2,10 @@ const express = require('express');
 const app = express();
 
 app.get('/something',(req,res)=>{
-    console.log(req)
     res.send({'key':'response'});
 });
 
 app.get('/',(req,res)=>{
-    console.log(req)
     res.send({home:'page'});
 });
 
