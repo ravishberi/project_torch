@@ -1,5 +1,14 @@
 const express = require('express');
+const passport = require('passport');
+const googleStrategy = require('passport-google-oauth20').Strategy;
+const keys = require('./config/keys');
+
 const app = express();
+//console.developers.google.com
+passport.use(new googleStrategy({
+    clientID : keys.googleClientId,
+    clientSecret : keys.googleClientsecret
+})); 
 
 app.get('/something',(req,res)=>{
     res.send({'key':'response'});
