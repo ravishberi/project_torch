@@ -1,22 +1,16 @@
 const express = require('express');
-const passport = require('passport');
-const googleStrategy = require('passport-google-oauth20').Strategy;
+const authRoutes = require('./routes/authRoutes');
+const mongoose = require('mongoose');
 const keys = require('./config/keys');
+require('./models/users'); // model must be defined first!
+require('./services/passport'); // passport handles saving..
+
 
 const app = express();
-//console.developers.google.com
-passport.use(new googleStrategy({
-    clientID : keys.googleClientId,
-    clientSecret : keys.googleClientsecret
-})); 
 
-app.get('/something',(req,res)=>{
-    res.send({'key':'response'});
-});
+mongoose.connect(keys.mongoURI);
 
-app.get('/',(req,res)=>{
-    res.send({home:'page'});
-});
+authRoutes(app)
 
 //if port exists use port on heroku or use localhost 5000
 const PORT = process.env.PORT || 5000;
