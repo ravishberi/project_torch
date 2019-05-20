@@ -12,10 +12,6 @@ module.exports = (app) =>{
         res.redirect('/surveys')
     });
 
-    app.get('/',(req,res)=>{
-        res.send({home:'page'});
-    });
-
     app.get('/api/logout',(req,res)=>{
         req.logout();
         res.redirect('/');
