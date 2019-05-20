@@ -5,19 +5,18 @@ const keys = require('../config/keys');
 
 const User = mongoose.model('users');
 
+//console.developers.google.com
+
 //place in cookie using mongos unique id
 passport.serializeUser((user, done)=>{
     done(null, user.id);
 });
 
-passport.deserializeUser((id, done)=>{
-    User.findById(id)
-    .then((user)=>{
-        done(null,user);
-    })
+passport.deserializeUser( async(id, done)=>{
+    const user = await User.findById(id)
+    done(null,user);
 });
 
-//console.developers.google.com
 passport.use(new googleStrategy(
     {
         clientID : keys.googleClientId,
@@ -25,20 +24,12 @@ passport.use(new googleStrategy(
         callbackURL : '/auth/google/callback',
         proxy : true
     },
-    (accessToken, refreshToken, profile, done) =>{
-        User.findOne({googleId : profile.id}).then((exisitingUser)=>{
-            if(exisitingUser){
-                //we already have a user fitting this criteria
-                done(null, exisitingUser);
-
-            }else{
-                //we dont have the record and we need to create a new user
-                new User({ googleId : profile.id })
-                .save()
-                .then((user)=>{
-                    done(null, user);
-                })
-            }
-        })
+    async (accessToken, refreshToken, profile, done) =>{
+        const exisitingUser = await User.findOne({googleId : profile.id})
+        if(exisitingUser){
+            return done(null, exisitingUser);
+        }
+        const user = await new User({ googleId : profile.id }).save()
+        done(null, user);
     }
 )); 
